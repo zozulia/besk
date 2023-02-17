@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\UserRegistrationLog;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -42,10 +43,25 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
     
+    /**
+     * 
+     * @param Registered $event
+     */
     public function handle(Registered $event)
     {
         if ($event->user instanceof MustVerifyEmail && ! $event->user->hasVerifiedEmail()) {
-            $event->user->sendEmailVerificationNotification();
+            //$event->user->sendEmailVerificationNotification();
         }
-    }    
+    }
+    
+    /**
+     * 
+     * @param type $userData
+     */
+    public static function create(array $userData): User
+    {
+        $model = static::query()->create($userData);
+        UserRegistrationLog::log($userData['name']);
+        return $model;
+    }
 }
