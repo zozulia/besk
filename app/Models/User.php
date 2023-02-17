@@ -50,7 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function handle(Registered $event)
     {
         if ($event->user instanceof MustVerifyEmail && ! $event->user->hasVerifiedEmail()) {
-            //$event->user->sendEmailVerificationNotification();
+            $event->user->sendEmailVerificationNotification();
         }
     }
     
